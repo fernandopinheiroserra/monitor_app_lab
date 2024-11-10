@@ -5,11 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Master Alert Dashboard{% endblock %}</title>
     <link rel="stylesheet" href="/static/styles.css">
-    <!-- Inclui o Bootstrap CSS para a barra de navegação -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
 <body>
-    <!-- Barra de Navegação Fixa no Topo -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
         <a class="navbar-brand" href="/">
             <div class="navbar-logo">
@@ -40,24 +38,20 @@
                     </div>
                 </li>
             </ul>
-            <!-- Status do Sistema no Canto Direito -->
             <span class="navbar-text" id="statusIndicator">
                 Status: Ativo
             </span>
         </div>
     </nav>
 
-    <!-- Conteúdo Principal -->
     <div class="container mt-5 pt-5">
         {% block content %}{% endblock %}
     </div>
 
-    <!-- Script do Bootstrap e atualização do status -->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
-    <!-- Script para atualizar o status -->
     <script>
         async function updateStatus() {
             try {
@@ -70,8 +64,8 @@
                 console.error("Erro ao atualizar status:", error);
             }
         }
-        setInterval(updateStatus, 10000); // Atualiza a cada 10 segundos
-        updateStatus(); // Atualiza ao carregar a página
+        setInterval(updateStatus, 10000); 
+        updateStatus(); 
     </script>
 </body>
 </html>
