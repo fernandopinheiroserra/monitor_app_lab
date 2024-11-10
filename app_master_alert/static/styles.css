@@ -1,0 +1,63 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #ffffff;
+    padding: 20px;
+}
+
+h1 {
+    color: #333;
+}
+
+.dashboard-container {
+    display: flex;
+    align-items: flex-start;
+    gap: 20px; /* Espaço entre os cards */
+    padding-bottom: 20px;
+    
+}
+
+.logo-card {
+    width: 142px;
+    height: 142px;
+    padding: 10px;
+    background-color: #fff;
+    border-radius: 5%; /* Borda completamente arredondada */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden; /* Garantir que a imagem se encaixe perfeitamente */
+}
+
+.husky-logo {
+    max-width: 100%; /* Ajusta a imagem ao tamanho do card */
+    border-radius: 10px; /* Borda arredondada na imagem */
+}
+
+.status, .sources {
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 15px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.status_gif {
+    padding: 20px;
+    background-color: #000000;
+    border-radius: 15px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+
+
+.sources ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.sources li {
+    padding: 10px;
+    background-color: #eee;
+    margin: 5px 0;
+    border-radius: 5px;
+}

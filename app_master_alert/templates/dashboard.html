@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Metadados e Título -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Master Alert Dashboard</title>
+    <!-- Estilos CSS -->
+    <link rel="stylesheet" href="/static/styles.css">
+    <!-- Inclusão do Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <!-- Contêiner Principal do Dashboard -->
+    <div class="dashboard-container">
+        <div class="logo-card">
+            <img src="/static/img/masteralert.png" alt="Master Alert Logo" class="husky-logo">
+        </div>
+
+        <!-- Card do Status Atual -->
+        <div class="status_gif">
+            <p style="color: white; font-size: 8pt; margin: 0px; padding: 0px;">Status Atual</p>
+            {% if status == "No heartbeat" %}
+                <img src="/static/img/error.gif" alt="No heartbeat detected" width="100" height="100">
+            {% else %}
+                <img src="/static/img/normal.gif" alt="Heartbeat active" width="100" height="100">
+            {% endif %}
+        </div>
+
+        <div class="status">
+            {% if status == "No heartbeat" %}
+                <p>Último heartbeat não recebido nos últimos 60 segundos.</p>
+            {% else %}
+                <p>Heartbeat ativo! Último recebido em: {{ last_heartbeat }}</p>
+            {% endif %}
+        </div>
+
+        <div class="sources">
+            <h2>Últimos Pings Recebidos</h2>
+            <ul>
+                {% for source in sources %}
+                    <li>
+                        <strong>Fonte (IP):</strong> {{ source.source }} <br>
+                        <strong>Empresa:</strong> {{ source.empresa }} <br>
+                        <strong>Sincronizador:</strong> {{ source.sinc }} <br>
+                        <strong>Data:</strong> {{ source.time.strftime('%Y-%m-%d %H:%M:%S') if source.time else 'N/A' }}
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+        
+    </div>
+
+
+<!-- Gráfico
+    <div class="dashboard-container">
+         Gráfico de Percentual de Uptime 
+        <div class="uptime-chart-card">
+            <h2>Percentual de Uptime dos Apps</h2>
+            <canvas id="uptimePercentageChart" width="400" height="200"></canvas>
+        </div>
+
+         Gráfico de Histórico de Uptime dos últimos 7 dias 
+        <div class="uptime-history-chart-card">
+            <h2>Histórico de Uptime - Últimos 7 dias</h2>
+            <canvas id="uptimeHistoryChart" width="400" height="200"></canvas>
+        </div>
+
+       Card para listar os últimos pings recebidos 
+
+    </div>
+-->
+
+
+    <script>
+        async function fetchUptimePercentage() {
+            const response = await fetch('/metrics/uptime_percentage');
+            const data = await response.json();
+
+            const labels = data.map(item => item.app_name);
+            const values = data.map(item => item.uptime_percent);
+
+            renderUptimePercentageChart(labels, values);
+        }
+
+        function renderUptimePercentageChart(labels, data) {
+            const ctx = document.getElementById('uptimePercentageChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Uptime (%)',
+                        data: data,
+                        backgroundColor: 'rgba(75, 192, 192, 0.6)',
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100
+                        }
+                    }
+                }
+            });
+        }
+
+        async function fetchUptimeHistory() {
+            const response = await fetch('/metrics/uptime_history');
+            const data = await response.json();
+
+            const appNames = Object.keys(data);
+            const days = Object.keys(data[appNames[0]]);  // Assume que todos os apps têm os mesmos dias registrados
+
+            const datasets = appNames.map(app => {
+                return {
+                    label: app,
+                    data: days.map(day => data[app][day] || 0), // 0 para dias sem pings
+                    borderColor: getRandomColor(),
+                    fill: false
+                };
+            });
+
+            renderUptimeHistoryChart(days, datasets);
+        }
+
+        function renderUptimeHistoryChart(labels, datasets) {
+            const ctx = document.getElementById('uptimeHistoryChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: datasets
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+
+        // Função auxiliar para cores aleatórias dos gráficos
+        function getRandomColor() {
+            return `rgba(${Math.floor(Math.random() * 255)}, ${Math.floor(Math.random() * 255)}, ${Math.floor(Math.random() * 255)}, 1)`;
+        }
+
+        // Inicialização dos gráficos
+        fetchUptimePercentage();
+        fetchUptimeHistory();
+    </script>
+</body>
+</html>

@@ -1,0 +1,47 @@
+version: "3.8"
+services:
+  mongodb:
+    image: mongo
+    container_name: mongodb
+    ports:
+      - "27017:27017"
+
+  master_alert:
+    build:
+      context: ./app_master_alert
+    container_name: master_alert
+    ports:
+      - "8000:8000"
+    depends_on:
+      - mongodb
+    environment:
+      - MONGO_HOST=mongodb
+      - MONGO_PORT=27017
+      - DATABASE_NAME=master_alert
+
+  app_ping1:
+    build:
+      context: ./app_ping 
+    container_name: app_ping1
+    depends_on:
+      - master_alert
+    environment:
+      - PING_INTERVAL=10  
+
+  app_ping2:
+    build:
+      context: ./app_ping
+    container_name: app_ping2
+    depends_on:
+      - master_alert
+    environment:
+      - PING_INTERVAL=15 
+
+  app_ping3:
+    build:
+      context: ./app_ping
+    container_name: app_ping3
+    depends_on:
+      - master_alert
+    environment:
+      - PING_INTERVAL=20  
